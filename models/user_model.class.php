@@ -7,10 +7,13 @@
  */
 
 /**
- * Description of toy_model
- *
- * @author awenger
+ * Description of user_model.class.php
+ * @title UserModel
+ * @authors awenger
+ * @date 11/01/2018
+ * @description User Model Class, Handles operations done on a user
  */
+
 class UserModel {
     
     private $db;
@@ -26,26 +29,62 @@ class UserModel {
      * returns an array of Toy objects if successful or false if failed.
      */
     public function verifyUser($username, $password) {
-    //SQL select statement
-        $sql = "SELECT * FROM " . $this->db->getUserTable() . "WHERE username = " . $username . " and password = " . $password;
- 
+        $sql = "SELECT *";
+        $sql .= " FROM " . $this->db->getUserTable();
+        $sql .= " WHERE username = '" . $username ."'";
+      
         //execute the query
         $query = $this->dbConnection->query($sql);
- 
+        
         if ($query && $query->num_rows > 0){
-            return true;
+            $user = $query->fetch_assoc();
+            return password_verify($password , $user['password']);
         }else{
             return false;
         }
     }
     
-    public function addUser($username, $password, $email, $firstName, $lastName) {
-    //SQL select statement
-        $sql = "INSERT INTO  " . $this->db->getUserTable() . "VALUES (" . $username . ", " . $password . ", " . $email . ", " . $firstName . ", " . $lastName . ")";
- 
+    public function resetPassword($username, $password) {
+        
+        $password = password_hash($password , PASSWORD_DEFAULT);
+
+        $sql = "UPDATE " . $this->db->getUserTable() . " SET password = " . $password;
+        $sql .= " WHERE username = '" . $username ."'";
+
         //execute the query
         $query = $this->dbConnection->query($sql);
- 
+
         return $query;
+        
+    }
+    
+    public function addUser($username, $password, $email, $firstName, $lastName) {
+    //SQL select statement
+        $id = $this->generateId();
+        $password = password_hash($password , PASSWORD_DEFAULT);
+        if ($id >= 0){
+            $sql = "INSERT INTO " . $this->db->getUserTable() . " VALUES (" . $id . ", '" . $username . "', '" . $password . "', '" . $email . "', '" . $firstName . "', '" . $lastName . "')";
+
+            //execute the query
+            $query = $this->dbConnection->query($sql);
+
+            return $query;
+        }else{
+            return false;
+        }
+        
+    }
+    
+    public function generateId(){
+        $sql = "SELECT *";
+        $sql .= " FROM " . $this->db->getUserTable();
+        
+        $query = $this->dbConnection->query($sql);
+        
+        if ($query){
+            return $query->num_rows + 1;
+        }else{
+            return -1;
+        }
     }
 }
