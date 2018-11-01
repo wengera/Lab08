@@ -24,17 +24,21 @@ class UserController {
     public function home(){
         if(isset($_COOKIE["user"])) {
             $view = new Index();
-            $view->display("You have successfully logged in.", true);
+            $view->display("You have successfully logged in.");
         }else{
             $view = new Register();
             $view->display();
         }
-        
     }
     
     public function login(){
-        $view = new Login();
-        $view->display();
+        if(isset($_COOKIE["user"])) {
+            $view = new Index();
+            $view->display("You are currently logged in.");
+        }else{
+            $view = new Login();
+            $view->display();
+        }
     }
     
     public function reset(){
@@ -51,7 +55,7 @@ class UserController {
         
         if ($user){
             $view = new Index();
-            $view->display("Your account has been successfully created.", false);
+            $view->display("Your account has been successfully created.");
         }else{
             $this->error("Unable to register user: " . $username);
         }
@@ -59,15 +63,14 @@ class UserController {
     
     //list all toys
     public function verifyUser($username, $password){
-
         $user = $this->userModel->verifyUser($username, $password);
-        
+
         if ($user){
             $cookie_name = "user";
             $cookie_value = $username;
             setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
             $view = new Index();
-            $view->display("You have successfully logged in.", true);
+            $view->display("You have successfully logged in.");
         }else{
             $this->error("Unable to verify user: " . $username);
         }
@@ -78,7 +81,7 @@ class UserController {
             unset($_COOKIE['user']);
             setcookie('user', null, -1, "/");
             $view = new Index();
-            $view->display("You have successfully logged out.", false);
+            $view->display("You have successfully logged out.");
         }else{
             $view = new Register();
             $view->display();

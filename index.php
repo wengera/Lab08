@@ -38,7 +38,7 @@ if(isset($_GET['action']) && ($_GET['action'] != '')){
             break;
         //case "____":
             //$user_controller->performReset($_POST['____'], $_POST['____']);
-            break;
+            //break;
         default:
             $user_controller->registerUser($_POST['username'], $_POST['password'], $_POST['email'], $_POST['fname'], $_POST['lname']);
             break;
