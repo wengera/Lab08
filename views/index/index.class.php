@@ -8,7 +8,7 @@
  */
 
 class Index extends View {
-    public function display($message) {
+    public function display($message, $loginState) {
         
         //call the header method defined in the parent class to add the header
         parent::header();
@@ -23,7 +23,7 @@ class Index extends View {
         </div>
         
         <?php 
-            if (isset($_COOKIE["user"])){
+            if ($loginState){
                 
         ?>
             <!-- bottom row for links  -->

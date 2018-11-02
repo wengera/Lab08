@@ -48,7 +48,7 @@ class UserModel {
         
         $password = password_hash($password , PASSWORD_DEFAULT);
 
-        $sql = "UPDATE " . $this->db->getUserTable() . " SET password = " . $password;
+        $sql = "UPDATE " . $this->db->getUserTable() . " SET password = '" . $password . "'";
         $sql .= " WHERE username = '" . $username ."'";
 
         //execute the query

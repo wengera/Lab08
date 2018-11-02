@@ -1,14 +1,16 @@
 <?php
 
 /*
- * Author: your name
- * Date: today's date
+ * Author: Alex Wenger Kevin June
+ * Date: 11/01/2018
  * Name: index.php
- * Description: short description about this file
+ * Description: it's the main index file
  */
 
 //include code in vendor/autoload.php file
 require_once ("vendor/autoload.php");
+
+//Autoloader doesn't work
 require("controllers/user_controller.class.php");
 require("models/user_model.class.php");
 require("views/index/register.class.php");
@@ -36,27 +38,14 @@ if(isset($_GET['action']) && ($_GET['action'] != '')){
         case "reset":
             $user_controller->reset();
             break;
-        //case "____":
-            //$user_controller->performReset($_POST['____'], $_POST['____']);
-            //break;
+        case "do_reset":
+            $user_controller->performReset($_POST['username'], $_POST['password']);
+            break;
         default:
             $user_controller->registerUser($_POST['username'], $_POST['password'], $_POST['email'], $_POST['fname'], $_POST['lname']);
             break;
-
     }
 }else{
     $user_controller->home();
 }
-    
-
-
-
-//create an object of UserController
-
-/*
- * $query = $user_controller->getUsers();
-while ($row = $query->fetch_assoc()) {
-    echo $row['username']."<br>";
-}
- */
 

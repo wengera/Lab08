@@ -9,7 +9,7 @@
 /**
  * Description of user_controller.class.php
  * @title user_controller
- * @authors awenger
+ * @authors awenger, kjune
  * @date 11/01/2018
  * @description UserController page
  */
@@ -24,7 +24,7 @@ class UserController {
     public function home(){
         if(isset($_COOKIE["user"])) {
             $view = new Index();
-            $view->display("You have successfully logged in.");
+            $view->display("You have successfully logged in.", true);
         }else{
             $view = new Register();
             $view->display();
@@ -34,7 +34,7 @@ class UserController {
     public function login(){
         if(isset($_COOKIE["user"])) {
             $view = new Index();
-            $view->display("You are currently logged in.");
+            $view->display("You are currently logged in.", true);
         }else{
             $view = new Login();
             $view->display();
@@ -43,11 +43,22 @@ class UserController {
     
     public function reset(){
         $view = new Reset();
-        $view->display();
+        $view->display($_COOKIE['user']);
     }
     
     public function performReset($username, $password){
         $result = $this->userModel->resetPassword($username, $password);
+        
+        if ($result){
+            if(isset($_COOKIE['user'])){
+                unset($_COOKIE['user']);
+                setcookie('user', null, -1, "/");
+            }
+            $view = new Login();
+            $view->display();
+        }else{
+            $this->error("Failed to reset password.");
+        }
     }
     
     public function registerUser($username, $password, $email, $firstName, $lastName){
@@ -55,7 +66,7 @@ class UserController {
         
         if ($user){
             $view = new Index();
-            $view->display("Your account has been successfully created.");
+            $view->display("Your account has been successfully created.", false);
         }else{
             $this->error("Unable to register user: " . $username);
         }
@@ -66,11 +77,13 @@ class UserController {
         $user = $this->userModel->verifyUser($username, $password);
 
         if ($user){
+            //if(isset($_COOKIE['user']))
+            //    unset($_COOKIE['user']);
             $cookie_name = "user";
             $cookie_value = $username;
             setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
             $view = new Index();
-            $view->display("You have successfully logged in.");
+            $view->display("You have successfully logged in.", true);
         }else{
             $this->error("Unable to verify user: " . $username);
         }
@@ -81,7 +94,7 @@ class UserController {
             unset($_COOKIE['user']);
             setcookie('user', null, -1, "/");
             $view = new Index();
-            $view->display("You have successfully logged out.");
+            $view->display("You have successfully logged out.", false);
         }else{
             $view = new Register();
             $view->display();

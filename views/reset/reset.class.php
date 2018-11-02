@@ -1,13 +1,13 @@
 <?php
 /*
- * Author: Alex Wenger
+ * Author: Alex Wenger Kevin June
  * Date: 11/01/2018
  * Name: reset.class.php
  * Description: This class extends the View class. The "display" method displays a reset password form. 
  */
 
 class Reset extends View {
-    public function display() {
+    public function display($username) {
         
         //call the header method defined in the parent class to add the header
         parent::header();
@@ -20,7 +20,7 @@ class Reset extends View {
         <div class="middle-row">
             <p>Please enter a new password. Username is not changeable.</p>
             <form method="post" action="index.php?action=do_reset">
-                <div><input type="text" name="username" style="width: 99%" required="" value="wengera" readonly="readonly"></div>
+                <div><input type="text" name="username" style="width: 99%" required="" value="<?= $username ?>" readonly="readonly"></div>
                 <div><input type="password" name="password" style="width: 99%;" required="" minlength="5" placeholder="Password, 5 characters minimum"></div>
                 <div><input type="submit" class="button" value="Reset Password"></div>
             </form>
